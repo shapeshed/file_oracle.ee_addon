@@ -33,102 +33,102 @@ The plugin provides comprehensive information on a file and makes this informati
 	
 ## Single Variables
 
-  {human_size}
+    {human_size}
   
 Shows the size of the file in human readable format (e.g. 3KB, 4.1GB).
 
-  {file_perms}
+    {file_perms}
   
 Show the octal file permission for the file.
 
-  {mime_type}
+    {mime_type}
   
 Returns the mime type for the file.
 
-  {md5}
+    {md5}
 
 Returns the md5 for the file.
 
-  {sha1}
+    {sha1}
   
 Returns the sha1 for the file.
 
-  {dirname}
+    {dirname}
   
 Returns the directory name for the file.
 
-  {basename}
+    {basename}
   
 Returns the basename of the file.
 
-  {extension}
+    {extension}
   
 Returns the extension for the file.
 
-  {filename}
+    {filename}
   
 Returns the filename for the file (available since PHP 5.2.0).
 
-  {dev}
+    {dev}
   
 The device number.
 
-  {ino}
+    {ino}
   
 The inode number. On windows systems this will always be 0.
 
-  {mode}
+    {mode}
   
 The inode protection mode.
 
-  {nlink}
+    {nlink}
   
 The number of links.
 
-  {uid}
+    {uid}
   
 The userid of owner. On Windows this will always be 0.
 
-  {gid}
+    {gid}
 
 The groupid of owner. On Windows this will always be 0.
 
-  {rdev}
+    {rdev}
   
 The device type, if inode device.
 
-  {size}
+    {size}
   
 The file size in bytes.
 
-  {atime}
+    {atime}
   
 The time of last access (Unix timestamp). This also accepts ExpressionEngine data formatting format="%F %d %Y"
 
-  {mtime}
+    {mtime}
   
 The time of last modification (Unix timestamp). This also accepts ExpressionEngine data formatting format="%F %d %Y"
 
-  {ctime}
+    {ctime}
 
 The time of last inode change (Unix timestamp). This also accepts ExpressionEngine data formatting format="%F %d %Y"
 
-  {blksize}
+    {blksize}
 
 The blocksize of filesystem IO. Only valid on systems supporting the st_blksize type - other systems (e.g. Windows) return -1.
 
-  {blocks}
+    {blocks}
 
 The number of blocks allocated. Only valid on systems supporting the st_blksize type - other systems (e.g. Windows) return -1.
 
 	
 ## Examples
 
-  {exp:file_oracle file="/images/avatar_bigger.jpg"}
-    <p>File size: {human_size}</p>
-    <p>File permissions: {file_perms}</p>
-    <p>Mime type: {mime_type}</p>
-  {/exp:file_oracle}
+    {exp:file_oracle file="/images/avatar_bigger.jpg"}
+      <p>File size: {human_size}</p>
+      <p>File permissions: {file_perms}</p>
+      <p>Mime type: {mime_type}</p>
+    {/exp:file_oracle}
 
 [George Ornbo]: http://shapeshed.com/
 [Github]: http://github.com/shapeshed/file_oracle.ee_addon
