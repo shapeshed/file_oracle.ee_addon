@@ -39,8 +39,8 @@ The plugin expects to be given a file. This can either be relative to the docume
 
 Or the full server path
 
-    {exp:file_oracle file="/Users/george/Sites/ee16.local/images/avatar_bigger.jpg"}
-      <p>MD5: {md5}</p>
+    {exp:file_oracle file="/Users/george/Sites/ee16.local/images/example.jpg"}
+      <p>Last modified: {mtime format="%F %d %Y"}</p>
     {/exp:file_oracle}
 	
 ## Single Variables
