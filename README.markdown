@@ -6,6 +6,7 @@
 ## Compatibility
 
 * ExpressionEngine Version 1.6.x
+* PHP 5.x
 
 ## License
 
