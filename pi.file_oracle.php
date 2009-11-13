@@ -11,10 +11,10 @@
  * 
  * @category   Plugins
  * @package    File Oracle
- * @version    1.1.1
- * @since      1.0.0
- * @author     George Ornbo <george@shapeshed.com>, Craig Allen
- * @see        {@link http://github.com/shapeshed/human_filesize.ee_addon/} 
+ * @version    0.1.0
+ * @since      0.1.0
+ * @author     George Ornbo <george@shapeshed.com>
+ * @see        {@link http://github.com/shapeshed/file_oracle.php/} 
  * @license    {@link http://opensource.org/licenses/bsd-license.php} 
  */
 
@@ -24,10 +24,10 @@
 */
 $plugin_info = array(
 						'pi_name'			=> 'File Oracle',
-						'pi_version'		=> '1.1.1',
-						'pi_author'			=> 'George Ornbo, Craig Allen',
+						'pi_version'		=> '0.1.0',
+						'pi_author'			=> 'George Ornbo',
 						'pi_author_url'		=> 'http://shapeshed.com/',
-						'pi_description'	=> 'Shows the size of a file in human readable format',
+						'pi_description'	=> 'Provides information on a file',
 						'pi_usage'			=> File_oracle::usage()
 					);
 
@@ -76,8 +76,6 @@ class File_oracle{
 	* @var array
 	*/	
 	private $data = array();
-	
-	
 	
 	/**
 	* ExpressionEngine needs this as it is PHP4 based so doesn't get __construct()
@@ -194,7 +192,7 @@ class File_oracle{
 		
 	/**
 	* Formats the byte size of a file into a human readable format
-	* @access protected
+	* @access private
 	* @return string
 	*/	
 	private function human_size($bytesize) 	
@@ -224,7 +222,7 @@ class File_oracle{
 
 	/**
 	* Gets the mime type of the file
-	* @access protected
+	* @access private
 	* @return string
 	*/	
 	private function get_mime_type($file_path)
