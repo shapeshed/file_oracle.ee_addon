@@ -100,7 +100,15 @@ class File_oracle{
 		
 		$this->file = str_replace(SLASH, '/', $TMPL->fetch_param('file'));
 		$this->file = trim(strip_tags($this->file));
-		$this->file = $_SERVER['DOCUMENT_ROOT'] . $this->file;
+		
+		if (stristr($this->file, $_SERVER['DOCUMENT_ROOT']))
+		{
+		  $this->file =  $this->file;
+		}
+		else
+		{
+		  $this->file = $_SERVER['DOCUMENT_ROOT'] . $this->file;		  
+		}
 					
 		$this->return_data = file_exists($this->file) ? $this->get_file_data($this->file, $this->tagdata) : $this->error_message;
 	}
@@ -113,6 +121,7 @@ class File_oracle{
 	protected function get_file_data($file, $tagdata)
 	{
 		global $TMPL, $LOC;	
+		clearstatcache();
 				
 		$this->pathinfo = pathinfo($file);		
 		$this->stat = stat($file);
@@ -255,7 +264,7 @@ function usage()
 {
 ob_start(); 
 ?>
-Documentation is available here http://shapeshed.github.com/expressionengine/extensions/filesize.html
+Documentation is available here http://shapeshed.github.com/expressionengine/plugins/file_oracle.html
 
 <?php
 $buffer = ob_get_contents();

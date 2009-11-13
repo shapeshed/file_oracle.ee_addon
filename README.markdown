@@ -11,7 +11,7 @@
 
 File Oracle is free for personal and commercial use. 
 
-If you use it commercially use a donation of $10 is suggested. You can send [donations here](http://pledgie.org/campaigns/2898). 
+If you use it commercially use a donation of $10 is suggested. You can send [donations here](http://pledgie.com/campaigns/6976). 
 
 File Oracle is licensed under a [Open Source Initiative - BSD License][] license.
 
@@ -30,6 +30,18 @@ Provides comprehensive information on a file
 ## Description
 
 The plugin provides comprehensive information on a file and makes this information available to ExpressionEngine templates. 
+
+The plugin expects to be given a file. This can either be relative to the document root of the site
+
+    {exp:file_oracle file="/images/example_file.jpg"}
+      <p>MD5: {md5}</p>
+    {/exp:file_oracle}
+
+Or the full server path
+
+    {exp:file_oracle file="/Users/george/Sites/ee16.local/images/avatar_bigger.jpg"}
+      <p>MD5: {md5}</p>
+    {/exp:file_oracle}
 	
 ## Single Variables
 
