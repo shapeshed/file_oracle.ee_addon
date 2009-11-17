@@ -101,7 +101,6 @@ class File_oracle{
 
     $this->file = str_replace(SLASH, '/', $this->EE->TMPL->fetch_param('file'));
     
-        echo $this->file;
     $this->file = trim(strip_tags($this->file));
 
     if (stristr($this->file, $_SERVER['DOCUMENT_ROOT']))
