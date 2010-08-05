@@ -11,7 +11,7 @@
  * 
  * @category   Plugins
  * @package    File Oracle
- * @version    2.0.0
+ * @version    2.0.1
  * @since      0.1.0
  * @author     George Ornbo <george@shapeshed.com>
  * @see        {@link http://github.com/shapeshed/file_oracle.ee_addon/} 
@@ -24,7 +24,7 @@
 */
 $plugin_info = array(
   'pi_name'         => 'File Oracle',
-  'pi_version'      => '2.0.0',
+  'pi_version'      => '2.0.1',
   'pi_author'       => 'George Ornbo',
   'pi_author_url'   => 'http://shapeshed.com/',
   'pi_description'  => 'Provides information on a file',
@@ -57,7 +57,7 @@ class File_oracle{
   * The error message used if no file is found
   * @var string
   */	
-  public $error_message = "The file was not found - please check your settings";
+  private $error_message = "The file was not found - please check your settings";
 
   /**
   * Holds the response from the pathinfo() on the file
@@ -94,25 +94,23 @@ class File_oracle{
   */
   public function __construct() 
   {
-    $this->EE =& get_instance();
-    
-    $this->tagdata = $this->EE->TMPL->tagdata;
-  
+  global $TMPL;	
 
-    $this->file = str_replace(SLASH, '/', $this->EE->TMPL->fetch_param('file'));
-    
-    $this->file = trim(strip_tags($this->file));
+  $this->tagdata  = $TMPL->tagdata;
 
-    if (stristr($this->file, $_SERVER['DOCUMENT_ROOT']))
-    {
-      $this->file =  $this->file;
-    }
-    else
-    {
-      $this->file = $_SERVER['DOCUMENT_ROOT'] . $this->file;		  
-    }
+  $this->file = str_replace(SLASH, '/', $TMPL->fetch_param('file'));
+  $this->file = trim(strip_tags($this->file));
+
+  if (stristr($this->file, $_SERVER['DOCUMENT_ROOT']))
+  {
+    $this->file =  $this->file;
+  }
+  else
+  {
+    $this->file = $_SERVER['DOCUMENT_ROOT'] . $this->file;		  
+  }
   
-    $this->return_data = file_exists($this->file) ? $this->get_file_data($this->file, $this->tagdata) : $this->error_message;
+  $this->return_data = file_exists($this->file) ? $this->get_file_data($this->file, $this->tagdata) : $this->error_message;
   }
 
   /**
@@ -122,97 +120,72 @@ class File_oracle{
   */		
   protected function get_file_data($file, $tagdata)
   {
-    clearstatcache();
+  global $TMPL, $LOC;	
+  clearstatcache();
 
-    $this->EE =& get_instance();
-    
-    $this->file = str_replace(SLASH, '/', $this->EE->TMPL->fetch_param('file'));
-    $this->file = trim(strip_tags($this->file));
-    
-    if (stristr($this->file, $_SERVER['DOCUMENT_ROOT']))
+  $this->pathinfo = pathinfo($file);		
+  $this->stat = stat($file);
+
+  $this->data['human_size'] 	= $this->human_size($this->stat['size']);	
+  $this->data['file_perms']	= substr(decoct(fileperms($file)),2);	
+  $this->data['mime_type']	= $this->get_mime_type($file);	
+  $this->data['md5']			= md5_file($file);
+  $this->data['sha1']			= sha1_file($file);
+
+  $date_vars = array('atime', 'mtime', 'ctime');
+
+  foreach ($date_vars as $val)
+  {					
+    if (preg_match_all("/".LD.$val."\s+format=[\"'](.*?)[\"']".RD."/s", $tagdata, $matches))
     {
-      $this->file =  $this->file;
-    }
-    else
-    {
-      $this->file = $_SERVER['DOCUMENT_ROOT'] . $this->file;		  
-    }	
-    
-    if (!file_exists($this->file)) 
-    {
-      $this->return_data = $this->error_message;
-      return;
-    }
-
-    $this->pathinfo = pathinfo($this->file);		
-    $this->stat = stat($this->file);
-
-    $this->data['human_size'] 	= $this->human_size($this->stat['size']);	
-    $this->data['file_perms']	= substr(decoct(fileperms($this->file)),2);	
-    $this->data['mime_type']	= $this->get_mime_type($this->file);	
-    $this->data['md5']			= md5_file($this->file);
-    $this->data['sha1']			= sha1_file($this->file);
-
-    $date_vars = array('atime', 'mtime', 'ctime');
-
-    foreach ($date_vars as $val)
-    {
-      if (preg_match_all("/".LD.$val."\s+format=[\"'](.*?)[\"']".RD."/s", $this->EE->TMPL->tagdata, $matches))
+      for ($j = 0; $j < count($matches['0']); $j++)
       {
-        
-        if (strpos($this->EE->TMPL->tagdata, LD.$val) === FALSE) continue;
+      $matches['0'][$j] = str_replace(array(LD,RD), '', $matches['0'][$j]);
 
-        if (preg_match_all("/".LD.$val."\s+format=([\"'])([^\\1]*?)\\1".RD."/s", $this->EE->TMPL->tagdata, $matches))
+        switch ($val)
         {
-          for ($j = 0; $j < count($matches[0]); $j++)
-          {
-            $matches[0][$j] = str_replace(array(LD,RD), '', $matches[0][$j]);
-
-            switch ($val)
-            {
-              case 'mtime' : $mtime[$matches[0][$j]] = $this->EE->localize->fetch_date_params($matches[2][$j]);
-                break;
-              case 'atime' : $atime[$matches[0][$j]] = $this->EE->localize->fetch_date_params($matches[2][$j]);
-                break;
-              case 'ctime' : $ctime[$matches[0][$j]] = $this->EE->localize->fetch_date_params($matches[2][$j]);
-                break;
-            }
-          }     
+        case 'mtime' : $mtime[$matches['0'][$j]] = $LOC->fetch_date_params($matches['1'][$j]);
+        break;
+        case 'atime' : $atime[$matches['0'][$j]] = $LOC->fetch_date_params($matches['1'][$j]);
+        break;
+        case 'ctime' : $ctime[$matches['0'][$j]] = $LOC->fetch_date_params($matches['1'][$j]);
+        break;
         }
       }
     }
-  foreach ($this->EE->TMPL->var_single as $key => $val)
+  }		
+
+  foreach ($TMPL->var_single as $key => $val)
   {
     if (isset($this->stat[$val]))
     {
-      $tagdata = $this->EE->TMPL->swap_var_single($key, $this->stat[$val], $tagdata);
+      $tagdata = $TMPL->swap_var_single($val, $this->stat[$val], $tagdata);
     }
     if (isset($this->pathinfo[$val]))
     {
-      $tagdata = $this->EE->TMPL->swap_var_single($key, $this->pathinfo[$val], $tagdata);
+      $tagdata = $TMPL->swap_var_single($val, $this->pathinfo[$val], $tagdata);
     }
     if (isset($this->data[$val]))
     {
-      $tagdata = $this->EE->TMPL->swap_var_single($key, $this->data[$val], $tagdata);
+      $tagdata = $TMPL->swap_var_single($val, $this->data[$val], $tagdata);
     }
     if (isset($mtime[$key]))
     {
       foreach ($mtime[$key] as $dvar)
-        $val = str_replace($dvar, $this->EE->localize->convert_timestamp($dvar, $this->stat['mtime'], TRUE), $val);
-        $tagdata = $this->EE->TMPL->swap_var_single($key, $val, $tagdata);         
+        $val = str_replace($dvar, $LOC->convert_timestamp($dvar, $this->stat['mtime'], TRUE), $val);
+        $tagdata = $TMPL->swap_var_single($key, $val, $tagdata);
     }
     if (isset($atime[$key]))
     {
       foreach ($atime[$key] as $dvar)
-        $val = str_replace($dvar, $this->EE->localize->convert_timestamp($dvar, $this->stat['atime'], TRUE), $val);
-        $tagdata = $this->EE->TMPL->swap_var_single($key, $val, $tagdata);         
+        $val = str_replace($dvar, $LOC->convert_timestamp($dvar, $this->stat['atime'], TRUE), $val);
+        $tagdata = $TMPL->swap_var_single($key, $val, $tagdata);					
     }
     if (isset($ctime[$key]))
     {
       foreach ($ctime[$key] as $dvar)
-      
-        $val = str_replace($dvar, $this->EE->localize->convert_timestamp($dvar, $this->stat['ctime'], TRUE), $val);
-        $tagdata = $this->EE->TMPL->swap_var_single($key, $val, $tagdata);
+        $val = str_replace($dvar, $LOC->convert_timestamp($dvar, $this->stat['ctime'], TRUE), $val);
+        $tagdata = $TMPL->swap_var_single($key, $val, $tagdata);
     }
   }
 
