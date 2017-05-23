@@ -22,6 +22,8 @@ For EE 1.6.x the file pi.file\_oracle.php must be placed in the /system/plugins/
 
 For EE 2.0.0 the file\_oracle folder must be placed in the /system/expressionengine/third_party/ folder in your [ExpressionEngine][] installation.
 
+For EE 3.0.0 the file\_oracle folder must be placed in the /system/user/addons/ folder in your [ExpressionEngine][] installation.
+
 ## Name
 
 File Oracle
